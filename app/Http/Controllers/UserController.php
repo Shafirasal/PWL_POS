@@ -6,6 +6,7 @@ use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserController extends Controller
 {
     public function index()
@@ -49,13 +50,23 @@ class UserController extends Controller
         //     abort(404);
         // });
 
+        //ERROR EXCEPTION
         // $user = UserModel::findOrFail(1);   
         
-        $user = UserModel::where('username', 'manager9')->firstOrFail();
+        // $user = UserModel::where('username', 'manager9')->firstOrFail();
 
+        // //RETREIVING AGGREGRATES
+        // $user = UserModel::where('level_id', 2)->count();
+        // dd($user);
+
+        
+        $totalUser = UserModel::where('level_id', 2)-> count(); //amvil total jumlah pengguna dengan leve-id 2
+        $userList = UserModel::where('level_id', 2)->get(); //amvbl daftar pengguna dengan level-id 2
+
+        return view('user', ['totalUser' => $totalUser, 'userlist' => $userList]);
 
         // // coba akses model UserModel
         // $user = UserModel::all(); // ambil semua data dari tabel m_user
-        return view('user', ['data' => $user]);
+        // return view('user', ['data' => $user]);
     }
 }
