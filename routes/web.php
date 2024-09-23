@@ -33,3 +33,4 @@ Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 
 //delete
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+ 
