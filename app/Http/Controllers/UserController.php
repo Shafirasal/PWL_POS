@@ -60,13 +60,35 @@ class UserController extends Controller
         // dd($user);
 
         
-        $totalUser = UserModel::where('level_id', 2)-> count(); //amvil total jumlah pengguna dengan leve-id 2
-        $userList = UserModel::where('level_id', 2)->get(); //amvbl daftar pengguna dengan level-id 2
+        // $totalUser = UserModel::where('level_id', 2)-> count(); //amvil total jumlah pengguna dengan leve-id 2
+        // $userList = UserModel::where('level_id', 2)->get(); //amvbl daftar pengguna dengan level-id 2
 
-        return view('user', ['totalUser' => $totalUser, 'userlist' => $userList]);
+        // return view('user', ['totalUser' => $totalUser, 'userlist' => $userList]);
 
         // // coba akses model UserModel
         // $user = UserModel::all(); // ambil semua data dari tabel m_user
         // return view('user', ['data' => $user]);
+
+        // $user = UserModel::firstOrCreate(
+        //     [
+        //         'username' => 'manager22',
+        //         'nama' => 'Manager Dua Dua',
+        //         'password' => Hash::make('12345'),
+        //         'level_id' => 2
+        //     ]
+        // );
+
+        $user = UserModel::firstOrNew(
+            [
+                'username' => 'manager33',
+                'nama' => 'Manager Tiga Tiga',
+                'password' => Hash::make('12345'),
+                'level_id' => 2
+                ]
+        );
+        $user -> save();
+        
+        return view('user', ['data' => $user]);
+        
     }
 }
