@@ -19,4 +19,5 @@ class SupplierModel extends Model
     {
         return $this->hasMany(StockModel::class, 'stock_id', 'stock_id');
     }
+    
 }
