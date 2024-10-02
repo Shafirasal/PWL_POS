@@ -1,10 +1,14 @@
 @extends('layouts.template')
 @section('content')
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('barang/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('/barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
+                    Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -50,15 +54,22 @@
 @endpush
 @push('js')
     <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
+            });
+        }
+
+        var dataBarang;
         $(document).ready(function() {
-            var dataBarang = $('#table_barang').DataTable({
+            dataBarang = $('#table_barang').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
                 ajax: {
                     "url": "{{ url('barang/list') }}",
                     "dataType": "json",
                     "type": "POST",
-                    "data": function (d) {
+                    "data": function(d) {
                         d.kategori_id = $('#kategori_id').val();
                     }
                 },
@@ -104,7 +115,7 @@
                 }]
             });
 
-            $('#kategori_id').on('change',function(){
+            $('#kategori_id').on('change', function() {
                 dataBarang.ajax.reload();
             });
         });
