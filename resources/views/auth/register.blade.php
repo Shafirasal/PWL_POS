@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Pengguna</title>
+    <title>Register Pengguna</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -24,44 +24,40 @@
         <div class="card card-outline card-primary">
             <div class="card-header text-center"><a href="{{ url('/') }}" class="h1"><b>Admin</b>LTE</a></div>
             <div class="card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
-                <form action="{{ url('login') }}" method="POST" id="form-login">
+                <p class="login-box-msg">Sign up to start your session</p>
+                <form action="{{ url('register') }}" method="POST" id="form-register">
                     @csrf
-                    <div class="input-group mb-3">
-                        <input type="text" id="username" name="username" class="form-control"
-                            placeholder="Username">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
-                        </div>
-                        <small id="error-username" class="error-text text-danger"></small>
+                    <div class="form-group">
+                        <label>Level Pengguna</label>
+                        <select name="level_id" id="level_id" class="form-control" required>
+                            <option value="">- Pilih Level -</option>
+                            @foreach ($level as $l)
+                                <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
+                            @endforeach
+                        </select>
+                        <small id="error-level_id" class="error-text form-text text-danger"></small>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="password" id="password" name="password" class="form-control"
-                            placeholder="Password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
-                        <small id="error-password" class="error-text text-danger"></small>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input value="" type="text" name="username" id="username" class="form-control" required>
+                        <small id="error-username" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama</label>
+                        <input value="" type="text" name="nama" id="nama" class="form-control" required>
+                        <small id="error-nama" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input value="" type="password" name="password" id="password" class="form-control" required>
+                        <small id="error-password" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                <input type="checkbox" id="remember"><label for="remember">Remember Me</label>
-                            </div>
-                        </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
                         </div>
                         <!-- /.col -->
-                    </div>
-                    <hr>
-                    <div class="row">
-                        Don't have account?<a href="{{ url('register') }}">register</a>
                     </div>
                 </form>
             </div>
@@ -89,18 +85,27 @@
             }
         });
         $(document).ready(function() {
-            $("#form-login").validate({
+            $("#form-register").validate({
                 rules: {
-                    username: {
-                        required: true,
-                        minlength: 4,
-                        maxlength: 20
-                    },
-                    password: {
-                        required: true,
-                        minlength: 6,
-                        maxlength: 20
-                    }
+                    level_id: {
+                    required: true,
+                    number: true
+                },
+                username: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20
+                },
+                nama: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                password: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 20
+                }
                 },
                 submitHandler: function(form) { // ketika valid, maka bagian yg akan dijalankan
                     $.ajax({
