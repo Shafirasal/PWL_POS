@@ -59,10 +59,6 @@
                         </div>
                         <!-- /.col -->
                     </div>
-                    <hr>
-                    <div class="row">
-                        Don't have account?<a href="{{ url('register') }}">register</a>
-                    </div>
                 </form>
             </div>
             <!-- /.card-body -->
@@ -98,7 +94,7 @@
                     },
                     password: {
                         required: true,
-                        minlength: 6,
+                        minlength: 5 ,
                         maxlength: 20
                     }
                 },
