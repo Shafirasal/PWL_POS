@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -465,5 +468,64 @@ class UserController extends Controller
         }
         return redirect('/');
     }
+
+//     public function upload(Request $request)
+//     {
+//         // Validasi file
+//         $request->validate([
+//             'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+//         ]);
+
+//         // Simpan gambar ke folder public
+//         $imageName = time().'.'.$request->profile_image->extension();  
+//         $request->profile_image->move(public_path('images/profile'), $imageName);
+
+//         // Simpan path gambar ke database
+//         $user = Auth::user();
+//         $user->profile_image = $imageName;
+//         $user->save();
+
+//         return back()->with('success', 'Gambar profil berhasil diunggah');
+//     }
+    
+// }
+
+    // Menampilkan halaman profil
+    public function showProfile()
+    {
+        $user = Auth::user(); // Mendapatkan user yang sedang login
+        $activeMenu = 'profile'; // Set active menu untuk halaman profile
+
+        $breadcrumb = (object) [
+            'title' => 'Profile',
+            'list' => ['Home']
+        ];
+
+        return view('profile', compact('user', 'activeMenu', 'breadcrumb'));
+    }
+
+    public function uploadProfilePicture(Request $request)
+    {
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = Auth::user();
+
+        // Hapus gambar profil lama jika ada
+        if ($user->profile_picture) {
+            Storage::delete($user->profile_picture);
+        }
+
+        // Simpan gambar baru
+        $path = $request->file('profile_picture')->store('profile_pictures');
+
+        // Update path di database
+        $user->profile_picture = $path;
+        $user->save();
+
+        return redirect()->route('profile')->with('success', 'Profile picture updated successfully.');
+    }
+
 
 }

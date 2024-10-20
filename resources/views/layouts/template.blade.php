@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'PWL Laravel Starter Code') }}</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}"> 
 
+    
     <!--Google Font:Source Sans Pro-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans-Pro:300,400,400i,700&display=fallback">
     <!--Font Awesome-->
@@ -36,6 +38,30 @@
       <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">AdminLTE 3</span>
     </a>
+
+{{-- 
+    <!-- Brand Logo -->
+<a href="{{ url('/') }}" class="brand-link">
+  <img src="{{ asset('storage/' . auth()->user()->avatar) }}" 
+       alt="User Avatar" 
+       class="brand-image img-circle elevation-3" 
+       style="opacity: .8; width: 33px; height: 33px;">
+  <span class="brand-text font-weight-light">{{ auth()->user()->nama }}</span>
+</a> --}}
+
+{{-- <!-- Ganti profile -->
+<a href="#" class="brand-link" onclick="document.getElementById('profile_image_input').click();">
+  <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+  <span class="brand-text font-weight-light">Contoh ya bang hi</span>
+</a>
+
+
+
+<!-- Input file yang tersembunyi -->
+<form action="{{ route('profile.upload') }}" method="POST" enctype="multipart/form-data" id="profile_image_form">
+  @csrf
+  <input type="file" name="profile_image" id="profile_image_input" style="display: none;" onchange="document.getElementById('profile_image_form').submit();">
+</form> --}}
 
     <!-- Sidebar -->
     @include('layouts.sidebar')

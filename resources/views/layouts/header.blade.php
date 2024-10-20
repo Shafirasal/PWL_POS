@@ -36,6 +36,55 @@
         </div>
       </li>
 
+      {{-- <li class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          <img src="{{ auth()->user()->avatar ? asset('avatars/' . auth()->user()->avatar) : asset('default-avatar.png') }}"
+            class="rounded-circle" width="20" height="20" alt="Avatar">
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">{{ auth()->user()->nama }}</span>
+          <div class="dropdown-divider"></div>
+          
+          <!-- Corrected Route -->
+          <a class="dropdown-item" href="{{ url('/avatar') }}">
+            <i class="fas fa-image mr-2"></i> Ganti Foto Profil
+          </a>
+      
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url('/profile') }}">
+            <i class="fas fa-user-edit mr-2"></i> Edit Data Diri
+          </a>
+        </div>
+      </li> --}}
+      
+
+      <li class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <img src="{{ auth()->user()->avatar ? asset('avatars/' . auth()->user()->avatar) : asset('default-avatar.png') }}"
+                 class="rounded-circle" width="20" height="20" alt="Avatar">
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">{{ auth()->user()->nama }}</span>
+            <div class="dropdown-divider"></div>
+    
+            <!-- Link untuk ganti foto profil -->
+            <a href="{{ url('/profile/avatar') }}" class="nav-link {{ isset($activeMenu) && $activeMenu == 'avatar' ? 'active' : '' }}">
+              <i class="fas fa-image"></i> Ganti Avatar
+          </a>
+    
+            <div class="dropdown-divider"></div>
+    
+            <!-- Link untuk edit profil -->
+            <a href="{{ url('/profile/profileEdit') }}" class="nav-link {{ isset($activeMenu) && $activeMenu == 'profile' ? 'active' : '' }}">
+              <i class="fas fa-user-edit"></i> Edit Profil
+          </a>
+        </div>
+    </li>
+    
+
+
+
+      
       <!-- Messages Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
@@ -120,6 +169,8 @@
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
+
+
       </li>
       <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -131,5 +182,9 @@
           <i class="fas fa-th-large"></i>
         </a>
       </li>
+      
     </ul>
+    
+
+    
   </nav>

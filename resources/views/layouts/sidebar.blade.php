@@ -13,6 +13,61 @@
     <!-- Sidebar Menu-->
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            {{-- <li class="nav-item">
+                <a href="{{ route('profile.show') }}" class="nav-link">
+                    <i class="nav-icon fas fa-user"></i>
+                    <p>Update Profil</p>
+                </a>
+            </li> --}}
+   
+            {{-- <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" class="img-circle" alt="User Avatar" style="width: 30px; height: 30px;">
+                    <span class="ml-2">{{ auth()->user()->nama }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                        <i class="fas fa-user mr-2"></i> Update Profile
+                    </a>
+                </div>
+            </li> --}}
+            
+            {{-- <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                    <img src="{{ asset('avatars/' . Auth::user()->avatar) }}" alt="Avatar" style="width: 30px;" class="rounded-circle">
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ route('profile.show') }}">Update Biodata</a>
+                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">Update Avatar</a>
+                </div>
+            </li>
+             --}}
+{{--             
+             <li class="nav-item has-treeview">
+                <a href="#" class="nav-link">
+                  <img src="{{ asset('avatars/' . Auth::user()->avatar) }}" alt="Avatar" style="width: 30px;" class="rounded-circle">
+                  <p>
+                    {{ Auth::user()->name }}
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ route('profile.show') }}" class="nav-link">
+                      <i class="fas fa-user-edit mr-2"></i> Update Biodata
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">
+                      <i class="fas fa-camera mr-2"></i> Update Avatar
+                    </a>
+                  </li>
+                </ul>
+              </li> --}}
+              
+            
+
+            
             <li class="nav-item">
                 <a href="{{ url('/') }}" class="nav-link {{ $activeMenu == 'dashboard' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -59,7 +114,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/barang') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }}">
+                <a href="{{ url('/penjualan') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }}">
                     <i class="nav-icon fas fa-cash-register"></i>
                     <p>Transaksi Penjualan</p>
                 </a>
