@@ -9,6 +9,7 @@
                 <button onclick="modalAction('{{ url('/stok/import') }}')" class="btn btn-info">Import stok</button>
                 {{-- <a href="{{ url('/stok/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export stok</a> --}}
                 <a href="{{ url('/stok/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export stok</a>
+                <a href="{{ url('/stok/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export stok</a>
                 <button onclick="modalAction('{{ url('/stok/create_ajax') }}')" class="btn btn-success">Tambah Data
                     (Ajax)</button>
             </div>

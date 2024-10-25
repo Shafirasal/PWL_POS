@@ -100,6 +100,49 @@ public function updateProfile(Request $request)
 
 
 
+//public function updateProfile(Request $request)
+// {
+//     // Validate input from the form
+//     $request->validate([
+//         'nama' => 'required|string|max:255',
+//         'username' => [
+//             'required',
+//             'string',
+//             'max:255',
+//             Rule::unique('m_user')->ignore(Auth::user()->user_id, 'user_id')
+//         ],
+//         'old_password' => 'required_with:new_password', // Old password is required only if new password is being set
+//         'new_password' => 'nullable|min:5|confirmed', // New password is optional, but if set, must be confirmed
+//     ]);
+
+//     // Get the currently authenticated user
+//     /** @var \App\Models\User $user */
+//     $user = Auth::user();
+
+//     // Check if the old password is provided and verify it if a new password is being set
+//     if ($request->new_password) {
+//         // Check if the old password matches
+//         if (!Hash::check($request->old_password, $user->password)) {
+//             return redirect()->back()->withErrors(['old_password' => 'Password lama tidak sesuai']);
+//         }
+
+//         // Update the new password
+//         $user->password = Hash::make($request->new_password);
+//     }
+
+//     // Update the name and username
+//     $user->nama = $request->nama;
+//     $user->username = $request->username;
+
+//     // Save changes to the user
+//     $user->save();
+
+//     return redirect()->back()->with('success', 'Profil berhasil diperbarui');
+// }
+
+
+
+
 
 
 

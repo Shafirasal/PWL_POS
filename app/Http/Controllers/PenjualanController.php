@@ -156,10 +156,16 @@ class PenjualanController extends Controller
         }
     }
 
+    // public function create_ajax()
+    // {
+    //     $users = UserModel::select('user_id', 'nama')->get();
+    //     return view('penjualan.create_ajax')->with('users', $users);
+    // }
     public function create_ajax()
     {
-        $users = UserModel::select('user_id', 'nama')->get();
-        return view('penjualan.create_ajax')->with('users', $users);
+        $user = UserModel::select('user_id', 'username')->get();
+        return view('penjualan.create_ajax')
+            ->with('user', $user);
     }
 
     // Store a newly created item via AJAX
@@ -277,4 +283,37 @@ class PenjualanController extends Controller
 
         return $pdf->stream('Data penjualan ' . date('Y-m-d H:i:s') . 'pdf');
     }
+
+    // public function show_ajax(string $id)
+    // {
+    //     $penjualan = PenjualanModel::with('user')->find($id);
+
+
+    //     return view('penjualan.show_ajax', ['transaksi' => $penjualan]);
+    // }
+
+    public function show_ajax(string $id)
+{
+    $penjualan = PenjualanModel::with('user')->find($id);
+
+    // Define the $page variable for the view
+    $page = (object)[
+        'title' => 'Detail Penjualan' // You can adjust this as needed
+    ];
+
+    // Check if penjualan data exists
+    if (!$penjualan) {
+        return response()->json(['error' => 'Data not found'], 404);
+    }
+
+    // Return the view with both $penjualan and $page
+    return view('penjualan.show_ajax', [
+        'penjualan' => $penjualan,
+        'page' => $page
+    ]);
+}
+
+
+
+
 }

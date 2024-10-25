@@ -9,6 +9,9 @@ data-keyboard="false" data-width="75%" aria-hidden="true"></div>
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('level/create') }}">Tambah</a>
                 <button onclick="modalAction('{{ url('/level/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
                     Ajax</button>
+                <button onclick="modalAction('{{ url('/level/import') }}')" class="btn btn-info">Import level</button>
+                <a href="{{ url('/level/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export level</a>
+                <a href="{{ url('/level/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export level</a>
             </div>
         </div>
         <div class="card-body">
