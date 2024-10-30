@@ -110,7 +110,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Penjualan ID</th>
-                                <th>Barang ID</th>
+                                <th>Nama Barang</th>
                                 <th>Harga</th>
                                 <th>Jumlah</th>
                                 <th>Aksi</th>
@@ -176,7 +176,7 @@
             columns: [
                 { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
                 { data: "penjualan_id", orderable: true, searchable: false },
-                { data: "barang.barang_id", orderable: true, searchable: false },
+                { data: "barang.barang_nama", name: 'barang.barang_nama', orderable: true, searchable: true }, // Ganti barang_id dengan nama barang
                 { data: "harga", orderable: true, searchable: false },
                 { data: "jumlah", orderable: true, searchable: false },
                 { data: "aksi", orderable: false, searchable: false }

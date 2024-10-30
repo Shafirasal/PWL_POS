@@ -3,38 +3,40 @@
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Penjualan</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Detail Penjualan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>User</label>
-                    <select class="form-control" id="user_id" name="user_id" required>
-                        <option value="">- Pilih user -</option>
-                        @foreach ($user as $c)
-                            <option value="{{ $c->user_id }}">{{ $c->username }}</option>
+                    <label>Kode Penjualan</label>
+                    <select class="form-control" id="penjualan_id" name="penjualan_id" required>
+                        <option value="">- Pilih penjualan -</option>
+                        @foreach ($penjualan as $a)
+                            <option value="{{ $a->penjualan_id }}">{{ $a->penjualan_kode }}</option>
                         @endforeach
                     </select>
-                    <small id="error-user_id" class="error-text form-text text-danger"></small>
+                    <small id="error-penjualan_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Nama Pembeli</label>
-                    <input value="" type="text" name="pembeli" id="pembeli" class="form-control"
-                        required>
-                    <small id="error-pembeli" class="error-text form-text text-danger"></small>
+                    <label>Barang</label>
+                    <select class="form-control" id="barang_id" name="barang_id" required>
+                        <option value="">- Pilih barang -</option>
+                        @foreach ($barang as $b)
+                            <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="error-barang_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Kode Penjualan</label>
-                    <input value="" type="text" name="penjualan_kode" id="penjualan_kode" class="form-control"
-                        required>
-                    <small id="error-penjualan_kode" class="error-text form-text text-danger"></small>
+                    <label>Harga</label>
+                    <input value="" type="text" name="harga" id="harga" class="form-control" required>
+                    <small id="error-harga" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Tanggal Penjualan</label>
-                    <input value="" type="date" name="penjualan_tanggal" id="penjualan_tanggal" class="form-control"
-                        required>
-                    <small id="error-penjualan_tanggal" class="error-text form-text text-danger"></small>
+                    <label>Jumlah</label>
+                    <input value="" type="text" name="jumlah" id="jumlah" class="form-control" required>
+                    <small id="error-jumlah" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -48,21 +50,23 @@
     $(document).ready(function() {
         $("#form-tambah").validate({
             rules: {
-                user_id: {
+                penjualan_id: {
                     required: true,
                     number: true
                 },
-                pembeli: {
+                barang_id: {
                     required: true,
+                    number: true
+                },
+                harga: {
+                    required: true,
+                    number: true,
                     minlength: 3
                 },
-                penjualan_kode: {
+                jumlah: {
                     required: true,
-                    minlength: 3
-                },
-                penjualan_tanggal: {
-                    required: true,
-                    minlength: 3
+                    number: true,
+                    minlength: 1,
                 }
             },
             submitHandler: function(form) {
@@ -78,7 +82,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tablePenjualan.ajax.reload();
+                            tableDetail.ajax.reload();
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {

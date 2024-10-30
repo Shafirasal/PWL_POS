@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\BarangModel;
@@ -24,16 +25,9 @@ class PenjualanDetailController extends Controller
             'title' => 'Daftar Detail Penjualan yang terdaftar dalam sistem'
         ];
         $penjualan = PenjualanModel::all();
-        $detail = PenjualanDetailModel::all(); // Ubah referensi model di sini
+        $detail = PenjualanDetailModel::all();
         $barang = BarangModel::all();
-        return view('penjualan.detail', [
-            'activeMenu' => $activeMenu,
-            'breadcrumb' => $breadcrumb,
-            'penjualan' => $penjualan,
-            'detail' => $detail,
-            'barang' => $barang,
-            'page'=> $page
-        ]);
+        return view('penjualan.detail', compact('activeMenu', 'breadcrumb', 'penjualan', 'detail', 'barang', 'page'));
     }
 
     // Menampilkan data detail penjualan dalam format DataTables
@@ -57,15 +51,26 @@ class PenjualanDetailController extends Controller
             ->make(true);
     }
 
+    public function show(string $id)
+    {
+        $detail = PenjualanDetailModel::with('barang')->find($id);
+        if (!$detail) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+        $breadcrumb = (object) ['title' => 'Detail Detail Penjualan', 'list' => ['Home', 'Penjualan', 'Detail']];
+        $page = (object) ['title' => 'Detail Detail Penjualan'];
+        $activeMenu = 'detail';
+        return view('detail.show', compact('breadcrumb', 'page', 'detail', 'activeMenu'));
+    }
+
     // Menampilkan form tambah data detail penjualan
     public function create_ajax()
     {
         $barang = BarangModel::select('barang_id', 'barang_nama')->get();
         $penjualan = PenjualanModel::select('penjualan_id', 'penjualan_kode')->get();
-        return view('detail.create_ajax')
-            ->with('barang', $barang)
-            ->with('penjualan', $penjualan);
+        return view('detail.create_ajax', compact('barang', 'penjualan'));
     }
+
     // Menyimpan data detail penjualan menggunakan AJAX
     public function store_ajax(Request $request)
     {
@@ -87,12 +92,18 @@ class PenjualanDetailController extends Controller
                 ], 422);
             }
 
-            PenjualanDetailModel::create($request->all());
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Data detail penjualan berhasil disimpan'
-            ]);
+            try {
+                PenjualanDetailModel::create($request->all());
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data detail penjualan berhasil disimpan'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+                ], 500);
+            }
         }
 
         return redirect('/');
@@ -102,9 +113,12 @@ class PenjualanDetailController extends Controller
     public function edit_ajax(string $id)
     {
         $detail = PenjualanDetailModel::find($id);
+        if (!$detail) {
+            return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+        }
+
         $barang = BarangModel::select('barang_id', 'barang_nama')->get();
         $penjualan = PenjualanModel::select('penjualan_id', 'penjualan_kode')->get();
-
         return view('detail.edit_ajax', compact('detail', 'barang', 'penjualan'));
     }
 
@@ -130,28 +144,28 @@ class PenjualanDetailController extends Controller
             }
 
             $detail = PenjualanDetailModel::find($id);
-            if ($detail) {
+            if (!$detail) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan'
+                ], 404);
+            }
+
+            try {
                 $detail->update($request->all());
                 return response()->json([
                     'status' => true,
                     'message' => 'Data berhasil diupdate'
                 ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage()
+                ], 500);
             }
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Data tidak ditemukan'
-            ], 404);
         }
 
         return redirect('/');
-    }
-
-    // Menampilkan form konfirmasi penghapusan data detail penjualan
-    public function confirm_ajax(string $id)
-    {
-        $detail = PenjualanDetailModel::find($id);
-        return view('detail.confirm_ajax', compact('detail'));
     }
 
     // Menghapus data detail penjualan menggunakan AJAX
@@ -159,18 +173,25 @@ class PenjualanDetailController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $detail = PenjualanDetailModel::find($id);
-            if ($detail) {
+            if (!$detail) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan'
+                ], 404);
+            }
+
+            try {
                 $detail->delete();
                 return response()->json([
                     'status' => true,
                     'message' => 'Data berhasil dihapus'
                 ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()
+                ], 500);
             }
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Data tidak ditemukan'
-            ], 404);
         }
 
         return redirect('/');
@@ -200,17 +221,16 @@ class PenjualanDetailController extends Controller
                 ], 422);
             }
 
-            $file = $request->file('file_detail');
-            $reader = IOFactory::createReader('Xlsx');
-            $reader->setReadDataOnly(true);
-            $spreadsheet = $reader->load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet();
-            $data = $sheet->toArray(null, false, true, true);
-            $insert = [];
+            try {
+                $file = $request->file('file_detail');
+                $reader = IOFactory::createReader('Xlsx');
+                $spreadsheet = $reader->load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $data = $sheet->toArray(null, false, true, true);
+                $insert = [];
 
-            if (count($data) > 1) {
-                foreach ($data as $baris => $value) {
-                    if ($baris > 1) {
+                foreach ($data as $index => $value) {
+                    if ($index > 1) {
                         $insert[] = [
                             'penjualan_id' => $value['A'],
                             'barang_id'    => $value['B'],
@@ -221,19 +241,24 @@ class PenjualanDetailController extends Controller
                     }
                 }
 
-                if (count($insert) > 0) {
+                if (!empty($insert)) {
                     PenjualanDetailModel::insertOrIgnore($insert);
                     return response()->json([
                         'status' => true,
                         'message' => 'Data berhasil diimport'
                     ]);
                 }
-            }
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Tidak ada data yang diimport'
-            ]);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat mengimport data: ' . $e->getMessage()
+                ], 500);
+            }
         }
 
         return redirect('/');

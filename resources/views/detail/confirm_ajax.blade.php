@@ -22,7 +22,7 @@
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Penjualan</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Detail Penjualan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
                 </div>
@@ -33,23 +33,19 @@
                     </div>
                     <table class="table table-sm table-bordered table-striped">
                         <tr>
-                            <th class="text-right col-3">Detail ID:</th>
-                            <td class="col-9">{{ $detail->detail_id }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3">Penjualan ID:</th>
+                            <th class="text-right col-3">Penjualan ID :</th>
                             <td class="col-9">{{ $detail->penjualan->penjualan_id }}</td>
                         </tr>
                         <tr>
-                            <th class="text-right col-3">Barang ID:</th>
-                            <td class="col-9">{{ $detail->barang->barang_id }}</td>
+                            <th class="text-right col-3">Nama Barang :</th>
+                            <td class="col-9">{{ $detail->barang->barang_nama }}</td>
                         </tr>
                         <tr>
-                            <th class="text-right col-3">Harga:</th>
-                            <td class="col-9">Rp {{$detail->harga }}</td>
+                            <th class="text-right col-3">Harga :</th>
+                            <td class="col-9">{{ $detail->harga }}</td>
                         </tr>
                         <tr>
-                            <th class="text-right col-3">Jumlah:</th>
+                            <th class="text-right col-3">Jumlah :</th>
                             <td class="col-9">{{ $detail->jumlah }}</td>
                         </tr>
                     </table>
@@ -78,7 +74,7 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                tablePenjualan.ajax.reload();
+                                tableDetail.ajax.reload();
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function(prefix, val) {
