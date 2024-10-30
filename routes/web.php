@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PenjualanController;
-
+use App\Http\Controllers\PenjualanDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -226,10 +226,27 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
                 Route::delete('/penjualan/{id}/delete_ajax', [PenjualanController::class, 'delete_ajax']);
                 Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy']); // menghapus data stok
                 Route::get('/penjualan/{id}/show_ajax', [PenjualanController::class, 'show_ajax']); //menampilkan detail dengan ajax
+                Route::post('/penjualan/detail/list', [PenjualanDetailController::class, 'list']);
 
             });
 
-            
+            Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+                Route::get('/detail', [PenjualanDetailController::class, 'index']);          // menampilkan halaman awal stok
+                Route::post('/detail/list', [PenjualanDetailController::class, 'list']);  // menampilkan halaman form tambah stok
+                Route::get('/detail/create_ajax', [PenjualanDetailController::class, 'create_ajax']);
+                Route::post('/detail/ajax', [PenjualanDetailController::class, 'store_ajax']);       // menyimpan data stok baru
+                Route::get('/detail/import', [PenjualanDetailController::class, 'import']);
+                Route::post('/detail/import_ajax', [PenjualanDetailController::class, 'import_ajax']);
+                Route::get('/detail/export_excel', [PenjualanDetailController::class, 'export_excel']); // export excel
+                Route::get('/detail/export_pdf', [PenjualanDetailController::class, 'export_pdf']); // export pdf
+                Route::get('/detail/{id}', [PenjualanDetailController::class, 'show']);    // menyimpan perubahan data stok
+                Route::get('/detail/{id}/edit_ajax', [PenjualanDetailController::class, 'edit_ajax']);
+                Route::put('/detail/{id}/update_ajax', [PenjualanDetailController::class, 'update_ajax']);
+                Route::get('/detail/{id}/delete_ajax', [PenjualanDetailController::class, 'confirm_ajax']);
+                Route::delete('/detail/{id}/delete_ajax', [PenjualanDetailController::class, 'delete_ajax']);
+                Route::delete('/detail/{id}', [PenjualanDetailController::class, 'destroy']); // menghapus data stok
+            });
+ 
 
     // Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
     //     Route::get('/profile', [ProfileController::class, 'showProfile'])->name('profile.show');// Menampilkan halaman profil
@@ -435,3 +452,4 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
 //         Route::delete('/{id}', [StokController::class, 'destroy']); // menghapus data stok
 //     });
 // });
+

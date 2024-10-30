@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\PenjualanModel;
@@ -23,9 +24,18 @@ class PenjualanController extends Controller
         ];
         $activeMenu = 'penjualan'; // Set menu yang sedang aktif
         $users = UserModel::all();
-
-        return view('penjualan.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'users' => $users, 'activeMenu' => $activeMenu]);
+        $barang = BarangModel::all(); // Ambil semua data barang
+    
+        // Kirimkan variabel $barang ke view
+        return view('penjualan.index', [
+            'breadcrumb' => $breadcrumb,
+            'page' => $page,
+            'users' => $users,
+            'barang' => $barang, // Menambahkan $barang
+            'activeMenu' => $activeMenu
+        ]);
     }
+    
 
     // Ambil data penjualan dalam bentuk JSON untuk DataTables
     public function list(Request $request)
@@ -171,31 +181,55 @@ class PenjualanController extends Controller
     // Store a newly created item via AJAX
     public function store_ajax(Request $request)
     {
-        // Check if the request is an AJAX request
+        // Cek apakah request adalah AJAX
         if ($request->ajax() || $request->wantsJson()) {
+            
+            // Aturan validasi
             $rules = [
                 'user_id' => 'required|integer|exists:m_user,user_id',
                 'pembeli' => 'required|string|max:100',
                 'penjualan_kode' => 'required|string|unique:t_penjualan,penjualan_kode',
                 'penjualan_tanggal' => 'required|date',
             ];
-
+    
+            // Membuat validasi
             $validator = Validator::make($request->all(), $rules);
-
+    
+            // Jika validasi gagal
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
-                ]);
+                    'errors' => $validator->errors() // Menampilkan pesan error
+                ], 422); // Kode status HTTP 422 untuk validasi yang gagal
             }
-
-            PenjualanModel::create($request->all());
-            return response()->json([
-                'status' => true,
-                'message' => 'Data penjualan berhasil disimpan'
-            ]);
+    
+            try {
+                // Membuat data penjualan
+                PenjualanModel::create([
+                    'user_id' => $request->user_id,
+                    'pembeli' => $request->pembeli,
+                    'penjualan_kode' => $request->penjualan_kode,
+                    'penjualan_tanggal' => $request->penjualan_tanggal,
+                ]);
+    
+                // Mengirim respons sukses
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data penjualan berhasil disimpan'
+                ], 200); // Kode status HTTP 200 untuk sukses
+    
+            } catch (\Exception $e) {
+                // Tangani error jika terjadi masalah saat menyimpan data
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat menyimpan data penjualan',
+                    'error' => $e->getMessage() // Menampilkan pesan error untuk debugging
+                ], 500); // Kode status HTTP 500 untuk kesalahan server
+            }
         }
+    
+        // Jika bukan request AJAX, redirect ke halaman utama
         return redirect('/');
     }
 
@@ -268,6 +302,64 @@ class PenjualanController extends Controller
         }
         return redirect('/');
     }
+
+    public function import()
+    {
+        return view('penjualan.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                // validasi file harus xls atau xlsx, max 1MB
+                'file_penjualan' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+            $file = $request->file('file_penjualan'); // ambil file dari request
+            $reader = IOFactory::createReader('Xlsx'); // load reader file excel
+            $reader->setReadDataOnly(true); // hanya membaca data
+            $spreadsheet = $reader->load($file->getRealPath()); // load file excel
+            $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
+            $data = $sheet->toArray(null, false, true, true); // ambil data excel
+            $insert = [];
+            if (count($data) > 1) { // jika data lebih dari 1 baris
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) { // baris ke 1 adalah header, maka lewati
+                        $insert[] = [
+                            'user_id'           => $value['A'],
+                            'pembeli'           => $value['B'],
+                            'penjualan_kode'    => $value['C'],
+                            'penjualan_tanggal' => $value['D'],
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+                if (count($insert) > 0) {
+                    // insert data ke database, jika data sudah ada, maka diabaikan
+                    PenjualanModel::insertOrIgnore($insert);
+                }
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
+
     public function export_pdf()
     {
         $penjualan = PenjualanModel::select('penjualan_id', 'user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal')
